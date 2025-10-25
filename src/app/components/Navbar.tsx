@@ -40,14 +40,16 @@ export function Navbar() {
   }, []);
 
   return (
-    <header
-      className={[
-        "sticky top-0 z-50 w-full",
-        "bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/70",
-        "border-b border-black/5",
-        scrolled ? "shadow-sm" : "shadow-none",
-      ].join(" ")}
-    >
+<header
+  className={[
+    "sticky top-0 z-50 w-full",
+    // solid on mobile, translucent on md+
+    "bg-white md:bg-white/80 md:backdrop-blur md:supports-[backdrop-filter]:bg-white/70",
+    "border-b border-black/5",
+    scrolled ? "shadow-sm" : "shadow-none",
+  ].join(" ")}
+>
+
       <nav
         className="
           mx-auto w-full max-w-[120rem]

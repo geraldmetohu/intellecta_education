@@ -67,7 +67,7 @@ Message: ${data.message}`;
     const body = encodeURIComponent(bodyRaw);
 
     // 1) Email client
-    window.open(`mailto:info@intellecta.uk?subject=${subject}&body=${body}`, "_blank");
+    window.open(`mailto:guidance@intellecta.uk?subject=${subject}&body=${body}`, "_blank");
 
     // 2) WhatsApp deep-link (prefilled)
     const wa = `https://wa.me/?text=${encodeURIComponent(
