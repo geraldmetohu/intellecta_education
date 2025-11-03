@@ -11,7 +11,7 @@ import {
   GraduationCap,
   FileCheck2,
   Briefcase,
-} from "lucide-react";
+} from "lucide-react"; 
 
 type Feature = {
   icon: React.ElementType;

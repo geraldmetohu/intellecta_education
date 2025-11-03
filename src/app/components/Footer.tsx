@@ -59,8 +59,8 @@ export function Footer() {
             </li>
             <li className="flex items-center gap-2">
               <Mail size={16} className="text-[rgb(var(--primary))]" />
-              <a href="mailto:info@intellecta.uk" className="hover:underline hover:text-[rgb(var(--primary))]">
-                info@intellecta.uk
+              <a href="mailto:guidance@intellecta.uk" className="hover:underline hover:text-[rgb(var(--primary))]">
+                guidance@intellecta.uk
               </a>
             </li>
           </ul>
