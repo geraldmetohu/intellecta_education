@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import { useEffect, useState } from "react";
+import { siteContact } from "@/lib/siteContact";
 
 const WORDS = [
   "University Support",
@@ -12,12 +13,9 @@ const WORDS = [
 ];
 
 const IMAGES = [
-"/images/hero3.jpg",
-    "/images/hero2.jpg", 
-    "/images/hero1.jpg",
-  "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=2000&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=2000&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1556761175-4b46a572b786?w=2000&auto=format&fit=crop",
+  "/images/hero3.jpg",
+  "/images/hero2.jpg",
+  "/images/hero1.jpg",
 ];
 
 export function Hero() {
@@ -117,9 +115,8 @@ export function Hero() {
             </a>
             <a
               target="_blank"
-              href={`https://wa.me/?text=${encodeURIComponent(
-                "Hi Intellecta Education, I’d like help applying to UK universities."
-              )}`}
+              rel="noopener noreferrer"
+              href={`${siteContact.whatsappHref}?text=${encodeURIComponent(siteContact.whatsappPrefill)}`}
               className="rounded-xl bg-white/90 px-8 py-3 text-blue-700 font-semibold ring-1 ring-blue-300 hover:ring-violet-400 transition-all"
             >
               WhatsApp Us

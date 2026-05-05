@@ -3,7 +3,9 @@
 // ──────────────────────────────────────────────────────────────────────────────
 "use client";
 
-import { Facebook, Instagram, Linkedin, Mail, Phone, MapPin, GraduationCap } from "lucide-react";
+import Image from "next/image";
+import { Facebook, Instagram, Mail, Phone, MapPin, Music2, MessageCircleMore } from "lucide-react";
+import { siteContact } from "@/lib/siteContact";
 
 export function Footer() {
   return (
@@ -27,13 +29,24 @@ export function Footer() {
       <div className="mx-auto w-full max-w-[100rem] px-6 py-14 grid gap-10 md:grid-cols-3">
         {/* Column 1 — Brand */}
         <div>
-          <div className="flex items-center gap-2">
-            <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-[rgb(var(--primary))]/10 ring-1 ring-[rgb(var(--primary))]/20">
-              <GraduationCap className="text-[rgb(var(--primary))]" size={18} />
+          <div className="flex items-center gap-3">
+            <span className="overflow-hidden rounded-2xl ring-1 ring-[rgb(var(--primary))]/15 shadow-sm">
+              <Image
+                src={siteContact.logoPath}
+                alt={`${siteContact.businessName} logo`}
+                width={56}
+                height={56}
+                className="h-14 w-14 object-cover"
+              />
             </span>
-            <h3 className="text-xl font-bold text-[rgb(var(--primary))]">
-              Intellecta Education
-            </h3>
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[rgb(var(--primary))]/70">
+                Intellecta
+              </p>
+              <h3 className="text-xl font-bold text-[rgb(var(--primary))]">
+                Education
+              </h3>
+            </div>
           </div>
           <p className="mt-3 text-sm text-neutral-700 leading-relaxed">
             Helping international students achieve their UK study ambitions —
@@ -53,14 +66,25 @@ export function Footer() {
             </li>
             <li className="flex items-center gap-2">
               <Phone size={16} className="text-[rgb(var(--primary))]" />
-              <a href="tel:+447538083762" className="hover:underline hover:text-[rgb(var(--primary))]">
-                +44 75 3808 3762
+              <a href={siteContact.phoneHref} className="hover:underline hover:text-[rgb(var(--primary))]">
+                {siteContact.phoneDisplay}
               </a>
             </li>
             <li className="flex items-center gap-2">
               <Mail size={16} className="text-[rgb(var(--primary))]" />
-              <a href="mailto:guidance@intellecta.uk" className="hover:underline hover:text-[rgb(var(--primary))]">
-                guidance@intellecta.uk
+              <a href={`mailto:${siteContact.email}`} className="hover:underline hover:text-[rgb(var(--primary))]">
+                {siteContact.email}
+              </a>
+            </li>
+            <li className="flex items-center gap-2">
+              <MessageCircleMore size={16} className="text-[rgb(var(--primary))]" />
+              <a
+                href={`${siteContact.whatsappHref}?text=${encodeURIComponent(siteContact.whatsappPrefill)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:underline hover:text-[rgb(var(--primary))]"
+              >
+                Chat on WhatsApp
               </a>
             </li>
           </ul>
@@ -76,9 +100,13 @@ export function Footer() {
           </p>
           <div className="mt-4 flex gap-4">
             {[
-              { icon: Facebook, href: "https://facebook.com" },
-              { icon: Instagram, href: "https://instagram.com" },
-              { icon: Linkedin, href: "https://linkedin.com" },
+              { icon: Facebook, href: siteContact.socials.facebook },
+              { icon: Instagram, href: siteContact.socials.instagram },
+              { icon: Music2, href: siteContact.socials.tiktok },
+              {
+                icon: MessageCircleMore,
+                href: `${siteContact.whatsappHref}?text=${encodeURIComponent(siteContact.whatsappPrefill)}`,
+              },
             ].map(({ icon: Icon, href }) => (
               <a
                 key={href}

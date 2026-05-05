@@ -3,6 +3,7 @@
 // ──────────────────────────────────────────────────────────────────────────────
 "use client";
 
+import Image from "next/image";
 import {
   Menu,
   X,
@@ -10,9 +11,10 @@ import {
   Instagram,
   Facebook,
   MessageCircleMore,
-  Ticket,
+  Music2,
 } from "lucide-react";
 import { useEffect, useId, useState } from "react";
+import { siteContact } from "@/lib/siteContact";
 
 function useLockBody(open: boolean) {
   useEffect(() => {
@@ -61,11 +63,25 @@ export function Navbar() {
         {/* Brand */}
         <a
           href="/"
-          className="group inline-flex items-center gap-2 font-extrabold tracking-tight text-[rgb(var(--primary))]"
+          className="group inline-flex items-center gap-3 font-extrabold tracking-tight text-[rgb(var(--primary))]"
         >
-          <span className="inline-block h-8 w-8 rounded-xl bg-[rgb(var(--primary))] ring-2 ring-[rgb(var(--primary))]/20" />
-          <span className="text-neutral-900 group-hover:text-[rgb(var(--primary))] transition-colors">
-            Intellecta Education
+          <span className="overflow-hidden rounded-xl ring-1 ring-[rgb(var(--primary))]/15 shadow-sm">
+            <Image
+              src={siteContact.logoPath}
+              alt={`${siteContact.businessName} logo`}
+              width={40}
+              height={40}
+              className="h-10 w-10 object-cover"
+              priority
+            />
+          </span>
+          <span className="leading-tight">
+            <span className="block text-sm uppercase tracking-[0.24em] text-[rgb(var(--primary))]/70">
+              Intellecta
+            </span>
+            <span className="block text-base text-neutral-900 group-hover:text-[rgb(var(--primary))] transition-colors">
+              Education
+            </span>
           </span>
         </a>
 
@@ -106,34 +122,36 @@ export function Navbar() {
         <div className="hidden md:flex items-center gap-2">
           <a
             aria-label="Instagram"
-            href="https://instagram.com"
+            href={siteContact.socials.instagram}
             target="_blank"
+            rel="noopener noreferrer"
             className="icon-btn hover:ring-1 hover:ring-[rgb(var(--primary))]/30"
           >
             <Instagram size={18} />
           </a>
           <a
             aria-label="Facebook"
-            href="https://facebook.com"
+            href={siteContact.socials.facebook}
             target="_blank"
+            rel="noopener noreferrer"
             className="icon-btn hover:ring-1 hover:ring-[rgb(var(--primary))]/30"
           >
             <Facebook size={18} />
           </a>
           <a
             aria-label="TikTok"
-            href="https://tiktok.com"
+            href={siteContact.socials.tiktok}
             target="_blank"
+            rel="noopener noreferrer"
             className="icon-btn hover:ring-1 hover:ring-[rgb(var(--primary))]/30"
           >
-            <Ticket size={18} />
+            <Music2 size={18} />
           </a>
           <a
             aria-label="WhatsApp"
-            href={`https://wa.me/?text=${encodeURIComponent(
-              "Hello Intellecta Education – I’d like a free consultation about studying in the UK."
-            )}`}
+            href={`${siteContact.whatsappHref}?text=${encodeURIComponent(siteContact.whatsappPrefill)}`}
             target="_blank"
+            rel="noopener noreferrer"
             className="icon-btn hover:ring-1 hover:ring-[rgb(var(--primary))]/30"
           >
             <MessageCircleMore size={18} />
@@ -230,21 +248,20 @@ export function Navbar() {
             </a>
 
             <div className="mt-3 flex gap-2">
-              <a aria-label="Instagram" href="https://instagram.com" target="_blank" className="icon-btn">
+              <a aria-label="Instagram" href={siteContact.socials.instagram} target="_blank" rel="noopener noreferrer" className="icon-btn">
                 <Instagram size={18} />
               </a>
-              <a aria-label="Facebook" href="https://facebook.com" target="_blank" className="icon-btn">
+              <a aria-label="Facebook" href={siteContact.socials.facebook} target="_blank" rel="noopener noreferrer" className="icon-btn">
                 <Facebook size={18} />
               </a>
-              <a aria-label="TikTok" href="https://tiktok.com" target="_blank" className="icon-btn">
-                <Ticket size={18} />
+              <a aria-label="TikTok" href={siteContact.socials.tiktok} target="_blank" rel="noopener noreferrer" className="icon-btn">
+                <Music2 size={18} />
               </a>
               <a
                 aria-label="WhatsApp"
-                href={`https://wa.me/?text=${encodeURIComponent(
-                  "Hello Intellecta Education – I’d like a free consultation."
-                )}`}
+                href={`${siteContact.whatsappHref}?text=${encodeURIComponent(siteContact.whatsappPrefill)}`}
                 target="_blank"
+                rel="noopener noreferrer"
                 className="icon-btn"
               >
                 <MessageCircleMore size={18} />

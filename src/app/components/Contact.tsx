@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { MotionSection } from "./MotionSection";
+import { siteContact } from "@/lib/siteContact";
 import {
   Mail,
   Phone,
@@ -16,7 +17,7 @@ import {
   ShieldAlert,
   Instagram,
   Facebook,
-  Ticket,
+  Music2,
 } from "lucide-react";
 
 // Schema
@@ -37,6 +38,8 @@ type FormData = z.infer<typeof Schema>;
 
 export function Contact() {
   const [sent, setSent] = useState<"idle" | "sending" | "done">("idle");
+  const [submitMessage, setSubmitMessage] = useState<string>("");
+  const [submitError, setSubmitError] = useState(false);
 
   const {
     register,
@@ -50,35 +53,41 @@ export function Contact() {
   const emailId = useId();
   const phoneId = useId();
 
-  function onSubmit(data: FormData) {
+  async function onSubmit(data: FormData) {
     // basic honeypot
     if (data.company && data.company.trim().length > 0) return;
 
     setSent("sending");
+    setSubmitMessage("");
+    setSubmitError(false);
 
-    const subject = encodeURIComponent("Free Consultation — Intellecta Education");
-    const bodyRaw = `Name: ${data.name}
-Email: ${data.email}
-Phone/WhatsApp: ${data.phone}
-Study level: ${data.studyLevel}
-Target intake: ${data.intake}
-Message: ${data.message}`;
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
 
-    const body = encodeURIComponent(bodyRaw);
+      const result = (await response.json()) as { ok: boolean; message: string };
 
-    // 1) Email client
-    window.open(`mailto:guidance@intellecta.uk?subject=${subject}&body=${body}`, "_blank");
+      if (!response.ok || !result.ok) {
+        setSent("idle");
+        setSubmitError(true);
+        setSubmitMessage(result.message || "The enquiry could not be sent.");
+        return;
+      }
 
-    // 2) WhatsApp deep-link (prefilled)
-    const wa = `https://wa.me/?text=${encodeURIComponent(
-      `Hello Intellecta Education, I’d like a consultation.\n\n${bodyRaw}`
-    )}`;
-    window.open(wa, "_blank");
-
-    setSent("done");
-    reset();
-    // return to idle after a short delay so the CTA text resets
-    setTimeout(() => setSent("idle"), 2500);
+      setSent("done");
+      setSubmitMessage(result.message);
+      reset();
+      setTimeout(() => setSent("idle"), 2500);
+    } catch {
+      setSent("idle");
+      setSubmitError(true);
+      setSubmitMessage("The enquiry could not be sent. Please try again in a moment.");
+    }
   }
 
   const submitting = isSubmitting || sent === "sending";
@@ -126,7 +135,24 @@ Message: ${data.message}`;
               Book your free consultation
             </h2>
             <p className="mt-2 text-neutral-700">
-              Email us or message on WhatsApp—whichever you prefer. We usually reply within 24–48h.
+              Send your enquiry here and we will reply by email or WhatsApp within 24–48h.
+            </p>
+            <p className="mt-2 text-sm text-neutral-600">
+              Prefer direct contact? Email{" "}
+              <a
+                className="font-semibold text-[rgb(var(--primary))] hover:underline"
+                href={`mailto:${siteContact.email}`}
+              >
+                {siteContact.email}
+              </a>{" "}
+              or WhatsApp{" "}
+              <a
+                className="font-semibold text-[rgb(var(--primary))] hover:underline"
+                href={siteContact.phoneHref}
+              >
+                {siteContact.phoneDisplay}
+              </a>
+              .
             </p>
           </div>
 
@@ -166,6 +192,7 @@ Message: ${data.message}`;
                     <input
                       {...register("name")}
                       placeholder="Jane Doe"
+                      autoComplete="name"
                       className="
                         input mt-1
                         w-full rounded-xl border border-black/10 bg-white/95
@@ -185,6 +212,7 @@ Message: ${data.message}`;
                       id={emailId}
                       type="email"
                       placeholder="you@email.com"
+                      autoComplete="email"
                       {...register("email")}
                       className="
                         input mt-1
@@ -204,6 +232,7 @@ Message: ${data.message}`;
                     <input
                       id={phoneId}
                       placeholder="+44 75…"
+                      autoComplete="tel"
                       {...register("phone")}
                       className="
                         input mt-1
@@ -269,7 +298,7 @@ Message: ${data.message}`;
                 {/* Consent + actions */}
                 <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <label className="inline-flex items-start gap-2 text-xs text-neutral-600">
-                    <input type="checkbox" className="mt-0.5" {...register("consent")} />
+                        <input type="checkbox" className="mt-0.5" {...register("consent")} />
                     I agree to be contacted about my enquiry. We’ll never share your details.
                   </label>
 
@@ -290,24 +319,23 @@ Message: ${data.message}`;
                         </>
                       ) : (
                         <>
-                          <Mail size={16} /> Send & Open WhatsApp
+                          <Mail size={16} /> Send enquiry
                         </>
                       )}
                     </button>
 
                     {/* Quick actions */}
                     <a
-                      href="mailto:info@intellecta.uk"
+                      href={`mailto:${siteContact.email}`}
                       className="btn btn-outline btn-sm rounded-xl px-4 py-2"
                     >
                       <Mail size={16} className="mr-1" />
                       Email us
                     </a>
                     <a
-                      href={`https://wa.me/?text=${encodeURIComponent(
-                        "Hello Intellecta Education – I’d like a free consultation about studying in the UK."
-                      )}`}
+                      href={`${siteContact.whatsappHref}?text=${encodeURIComponent(siteContact.whatsappPrefill)}`}
                       target="_blank"
+                      rel="noopener noreferrer"
                       className="btn btn-gradient btn-sm rounded-xl px-4 py-2"
                     >
                       <MessageCircleMore size={16} className="mr-1" />
@@ -315,6 +343,33 @@ Message: ${data.message}`;
                     </a>
                   </div>
                 </div>
+
+                {submitMessage ? (
+                  <p className={`mt-3 text-sm ${submitError ? "text-red-600" : "text-emerald-700"}`}>
+                    {submitMessage}
+                  </p>
+                ) : null}
+                {submitError ? (
+                  <p className="mt-2 text-xs text-neutral-600">
+                    If email sending is still being configured, you can also reach us immediately at{" "}
+                    <a
+                      className="font-semibold text-[rgb(var(--primary))] hover:underline"
+                      href={`mailto:${siteContact.email}`}
+                    >
+                      {siteContact.email}
+                    </a>{" "}
+                    or via WhatsApp at{" "}
+                    <a
+                      className="font-semibold text-[rgb(var(--primary))] hover:underline"
+                      href={`${siteContact.whatsappHref}?text=${encodeURIComponent(siteContact.whatsappPrefill)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {siteContact.phoneDisplay}
+                    </a>
+                    .
+                  </p>
+                ) : null}
 
                 {/* Status / privacy note */}
                 <div className="mt-4 flex items-start gap-2 text-xs text-neutral-600">
@@ -347,13 +402,13 @@ Message: ${data.message}`;
                   <li className="flex items-center gap-2">
                     <Mail size={16} className="text-[rgb(var(--primary))]" />
                     <span>
-                      <strong>Email:</strong> info@intellecta.uk
+                      <strong>Email:</strong> {siteContact.email}
                     </span>
                   </li>
                   <li className="flex items-center gap-2">
                     <Phone size={16} className="text-[rgb(var(--primary))]" />
                     <span>
-                      <strong>Phone/WhatsApp:</strong> +44 (0) 0000 000000
+                      <strong>Phone/WhatsApp:</strong> {siteContact.phoneDisplay}
                     </span>
                   </li>
                   <li className="flex items-start gap-2">
@@ -367,7 +422,8 @@ Message: ${data.message}`;
                 <div className="mt-5 grid grid-cols-3 gap-2">
                   <a
                     target="_blank"
-                    href="https://instagram.com"
+                    rel="noopener noreferrer"
+                    href={siteContact.socials.instagram}
                     className="icon-btn hover:ring-1 hover:ring-[rgb(var(--primary))]/30"
                     aria-label="Instagram"
                   >
@@ -375,15 +431,17 @@ Message: ${data.message}`;
                   </a>
                   <a
                     target="_blank"
-                    href="https://tiktok.com"
+                    rel="noopener noreferrer"
+                    href={siteContact.socials.tiktok}
                     className="icon-btn hover:ring-1 hover:ring-[rgb(var(--primary))]/30"
                     aria-label="TikTok"
                   >
-                    <Ticket size={18} />
+                    <Music2 size={18} />
                   </a>
                   <a
                     target="_blank"
-                    href="https://facebook.com"
+                    rel="noopener noreferrer"
+                    href={siteContact.socials.facebook}
                     className="icon-btn hover:ring-1 hover:ring-[rgb(var(--primary))]/30"
                     aria-label="Facebook"
                   >

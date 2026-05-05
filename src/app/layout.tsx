@@ -3,6 +3,13 @@
 import "./global.css";
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
+import { siteContact } from "@/lib/siteContact";
+
+const siteUrl = "https://intellecta.uk";
+const siteTitle = "Intellecta Education — Study in the UK";
+const siteDescription =
+  "Intellecta Education: University support, Visa support, post-arrival advice, and post-study employment advice for students planning to study in the UK.";
+const siteLogo = siteContact.logoPath;
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -15,29 +22,47 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://intellecta.uk"),
-  title: "Intellecta Education — Study in the UK",
-  description:
-    "Intellecta Education: University support, Visa support (with accredited immigration firm partnership), Post-Arrival Advice, and Post-Study Employment Advice.",
-  alternates: { canonical: "https://intellecta.uk" },
+  metadataBase: new URL(siteUrl),
+  title: siteTitle,
+  description: siteDescription,
+  alternates: { canonical: siteUrl },
+  applicationName: "Intellecta Education",
+  keywords: [
+    "Intellecta Education",
+    "study in the UK",
+    "UK university support",
+    "student visa support",
+    "post-arrival advice",
+    "post-study employment advice",
+  ],
   openGraph: {
     type: "website",
-    url: "https://intellecta.uk",
-    title: "Intellecta Education — Study in the UK",
+    url: siteUrl,
+    title: siteTitle,
     siteName: "Intellecta Education",
-    description:
-      "University support • Visa support • Post-Arrival Advice • Post-Study Employment Advice",
+    description: siteDescription,
+    images: [
+      {
+        url: siteLogo,
+        width: 1200,
+        height: 1200,
+        alt: "Intellecta Education logo",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Intellecta Education — Study in the UK",
-    description:
-      "University support • Visa support • Post-Arrival Advice • Post-Study Employment Advice",
+    title: siteTitle,
+    description: siteDescription,
+    images: [siteLogo],
   },
   icons: {
-    icon: "/favicon.ico",
-    shortcut: "/favicon.ico",
-    apple: "/apple-touch-icon.png",
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: siteLogo, type: "image/png" },
+    ],
+    shortcut: ["/favicon.ico"],
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
   },
 };
 
@@ -45,13 +70,16 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   const orgJsonLd = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: "Intellecta Education",
-    url: "https://intellecta.uk",
-    logo: "https://intellecta.uk/apple-touch-icon.png",
+    name: siteContact.businessName,
+    url: siteUrl,
+    logo: `${siteUrl}${siteLogo}`,
+    image: `${siteUrl}${siteLogo}`,
+    email: siteContact.email,
+    telephone: siteContact.phoneRaw,
     sameAs: [
-      "https://www.instagram.com/",
-      "https://www.facebook.com/",
-      "https://www.tiktok.com/",
+      siteContact.socials.instagram,
+      siteContact.socials.facebook,
+      siteContact.socials.tiktok,
     ],
   };
 
